@@ -1,0 +1,57 @@
+.book-cover {
+  width: 200px; // Adjust as needed
+  height: 300px; // Maintain aspect ratio
+  object-fit: cover; // Ensures images don’t stretch
+  display: block;
+  margin: 0 auto; // Centers image in card
+}
+
+.availability {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.green-dot {
+  background-color: green;
+}
+
+.yellow-dot {
+  background-color: yellow;
+}
+
+.red-dot {
+  background-color: red;
+}
+
+ion-button {
+  font-size: 18px;
+  color: var(--ion-color-primary);
+}
+
+ion-icon {
+  font-size: 22px;
+}
+
+
+ion-header {
+  margin-top: 56px; // Adjust to match global header height
+}
+
+.mat-dialog-container {
+  background: var(--ion-color-light);
+  color: var(--ion-color-dark);
+  border-radius: 12px;
+}
+ion-card {
+  background: var(--ion-color-light);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+ion-item{
+  background: var(--ion-color-light);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}

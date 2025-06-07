@@ -1,0 +1,76 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+//@import "@ionic/angular/css/palettes/dark.system.css";
+
+:root {
+  --ion-color-primary: #C8A97E;
+  --ion-color-secondary: #8D6E63;
+  --ion-color-background: #F5E9DA;
+  --ion-color-text: #3E2723;
+  --ion-color-accent: #6D4C41;
+}
+/* Apply Ionic colors to Angular Material components */
+.mat-mdc-button {
+  background-color: var(--ion-color-primary) !important;
+  color: var(--ion-color-text) !important;
+}
+
+.mat-mdc-card {
+  background-color: var(--ion-color-background) !important;
+  color: var(--ion-color-text) !important;
+}
+
+.mat-mdc-toolbar {
+  background-color: var(--ion-color-accent) !important;
+}
+
+.mat-mdc-dialog-container {
+  background-color: var(--ion-color-background) !important;
+  color: var(--ion-color-text) !important;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}

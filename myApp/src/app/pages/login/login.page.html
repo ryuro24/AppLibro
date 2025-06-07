@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+
+    <div [class.shake]="shakeEmail" class="input-container">
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" name="email" [(ngModel)]="email" required email></ion-input>
+      </ion-item>
+      <div class="error-message" *ngIf="submitted && !emailValid()">Por favor, ingrese un email válido.</div>
+    </div>
+
+    <div [class.shake]="shakePassword" class="input-container">
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" name="password" [(ngModel)]="password" required minlength="6"></ion-input>
+      </ion-item>
+      <div class="error-message" *ngIf="submitted && !passwordValid()">La contraseña es obligatoria (mínimo 6 caracteres).</div>
+    </div>
+
+    <ion-button expand="block" type="submit">Ingresar</ion-button>
+    <p class="register-link">
+  ¿No tienes una cuenta? <a routerLink="/register">Regístrate aquí</a>
+</p>
+
+  </form>
+
+</ion-content>

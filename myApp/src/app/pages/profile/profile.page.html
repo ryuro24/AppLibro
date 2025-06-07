@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- User Info Card -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Datos del Usuario</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Correo:</ion-label>
+        <span>{{ userEmail }}</span> <!-- Email from login -->
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Transaction History Card -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Historial de Transacciones</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+
+      <!-- Filter Dropdown -->
+      <ion-item>
+        <ion-label>Filtrar por tipo:</ion-label>
+        <ion-select [(ngModel)]="selectedTransactionType" (ionChange)="selectTransactionType(selectedTransactionType)">
+          <ion-select-option value="Todos">Todos</ion-select-option>
+          <ion-select-option value="rent">Alquiler</ion-select-option>
+          <ion-select-option value="sale">Compra</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Transaction List (No Columns, Full Width Cards) -->
+      <ion-list>
+        <ion-card class="transaction-card" *ngFor="let transaction of filteredTransactions">
+          <ion-card-header>
+            <ion-card-title>{{ transaction.bookTitle }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <p><strong>Tipo:</strong> {{ transaction.type === 'rent' ? 'Alquiler' : 'Compra' }}</p>
+
+            <!-- Rental Info -->
+            <div *ngIf="transaction.type === 'rent'">
+              <p><strong>Fecha de inicio:</strong> {{ transaction.startDate | date:'shortDate' }}</p>
+              <p><strong>Fecha de devolución:</strong> {{ transaction.endDate | date:'shortDate' }}</p>
+              <p><strong>Precio de alquiler:</strong> ${{ transaction.rentPrice }}</p>
+              <ion-label>Devuelto:</ion-label>
+              <ion-checkbox [checked]="transaction.returned" disabled></ion-checkbox> <!-- ✅ Read-only -->
+            </div>
+
+            <!-- Purchase Info -->
+            <div *ngIf="transaction.type === 'sale'">
+              <p><strong>Fecha de compra:</strong> {{ transaction.purchaseDate | date:'shortDate' }}</p>
+              <p><strong>Precio:</strong> ${{ transaction.price }}</p>
+            </div>
+
+          </ion-card-content>
+        </ion-card>
+      </ion-list>
+
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="full" color="danger" (click)="logout()">Cerrar Sesión</ion-button>
+
+</ion-content>

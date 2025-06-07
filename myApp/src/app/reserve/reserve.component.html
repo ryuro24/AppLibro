@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Reservar Libro</h2>
+<mat-dialog-content>
+  <img [src]="data.book.cover" alt="Cover of {{ data.book.title }}" class="small-book-cover">
+  <p><strong>{{ data.book.title }}</strong> - {{ data.book.author }}</p>
+  <p>Fecha de inicio: <strong>{{ startDate | date:'fullDate' }}</strong></p>
+
+  <!-- ✅ Rental Price (Only if rentPrice > 0) -->
+  <p *ngIf="data.book.rentPrice > 0">
+    <strong>💰 Precio de alquiler por semana:</strong> ${{ data.book.rentPrice }}
+  </p>
+  <!-- ✅ Total Price (Always Visible, Updates Dynamically) -->
+  <p>
+    <strong>💰 Total:</strong> {{ returnDate ? '$' + totalPrice : 'Seleccione una fecha de devolución' }}
+  </p>
+<mat-form-field appearance="fill">
+  <mat-label>Fecha de devolución</mat-label>
+  <input matInput [matDatepicker]="picker" [(ngModel)]="returnDate" (ngModelChange)="validateReturnDate()" [min]="startDate">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+
+<!-- ✅ Show Warning if Date is Invalid -->
+<p *ngIf="returnDate && returnDate < startDate" style="color: red;">
+  ⚠ La fecha de devolución no puede ser menor a la fecha de inicio.
+</p>
+
+
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button color="warn" style="font-size: 1.2rem; padding: 10px 20px;" (click)="closeDialog()">Cancelar</button>
+  <button mat-button color="primary" style="font-size: 1.2rem; padding: 10px 20px;" [disabled]="!returnDate" (click)="confirmReservation()">Confirmar</button>
+</mat-dialog-actions>

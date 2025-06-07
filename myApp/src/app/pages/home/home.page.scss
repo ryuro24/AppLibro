@@ -1,0 +1,47 @@
+.book-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.book-cover {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.availability {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.green-dot {
+  background-color: green;
+}
+
+.yellow-dot {
+  background-color: yellow;
+}
+
+.red-dot {
+  background-color: red;
+}
+.mat-dialog-container {
+  background: var(--ion-color-light);
+  color: var(--ion-color-dark);
+  border-radius: 12px;
+}
+ion-card {
+  background: var(--ion-color-light);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+ion-item{
+  background: var(--ion-color-light);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}

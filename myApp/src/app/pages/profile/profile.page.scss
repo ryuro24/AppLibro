@@ -1,0 +1,53 @@
+/* ✅ Transaction Table */
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px; /* More breathing room */
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: 14px 18px; /* Slightly larger padding */
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.transaction-table th {
+  background-color: #4c3d3d; /* Consistent header color */
+  font-weight: bold;
+  color: white; /* Better contrast */
+}
+
+.transaction-table tbody tr:hover {
+  background-color: #6a4f4f; /* Softer hover effect */
+}
+
+/* ✅ Card Styling */
+ion-card {
+  background: var(--ion-color-light);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 15px; /* More internal spacing */
+  margin-bottom: 15px; /* Space between cards */
+}
+
+/* ✅ Item Styling */
+ion-item {
+  background: var(--ion-color-light);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 12px; /* More internal spacing */
+  margin-bottom: 10px; /* Space between items */
+}
+
+/* ✅ Dropdown Styling */
+ion-select {
+  width: 100%;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* ✅ Button Styling */
+ion-button {
+  margin-top: 20px; /* Space above logout button */
+}

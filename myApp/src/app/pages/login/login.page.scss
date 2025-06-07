@@ -1,0 +1,42 @@
+.input-container {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+
+
+
+.error-message {
+  color: #ff0000;
+  font-size: 0.8em;
+  margin-top: 4px;
+  padding-left: 15px;
+}
+.register-link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.register-link a {
+  color: var(--ion-color-primary);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+ion-card {
+  background: var(--ion-color-light);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+ion-item{
+  background: var(--ion-color-light);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}

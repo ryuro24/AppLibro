@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form (ngSubmit)="onSubmit()" #registerForm="ngForm" novalidate>
+
+<div [class.shake]="shakeUsername" class="input-container">
+  <ion-item>
+    <ion-label position="floating">Nombre de Usuario</ion-label>
+    <ion-input type="text" name="username" [(ngModel)]="username" required></ion-input>
+  </ion-item>
+  <div class="error-message" *ngIf="submitted && !usernameValid()">Debe tener al menos 3 caracteres.</div>
+</div>
+
+    <div [class.shake]="shakeEmail" class="input-container">
+      <ion-item>
+        <ion-label position="floating">Correo</ion-label>
+        <ion-input type="email" name="email" [(ngModel)]="email" required></ion-input>
+      </ion-item>
+      <div class="error-message" *ngIf="submitted && !emailValid()">Por favor, ingrese un email válido.</div>
+    </div>
+
+    <div [class.shake]="shakePassword" class="input-container">
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" name="password" [(ngModel)]="password" required minlength="6"></ion-input>
+      </ion-item>
+      <div class="error-message" *ngIf="submitted && !passwordValid()">Debe tener al menos 6 caracteres.</div>
+    </div>
+
+    <div [class.shake]="shakePassword" class="input-container">
+      <ion-item>
+        <ion-label position="floating">Confirmar Contraseña</ion-label>
+        <ion-input type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required></ion-input>
+      </ion-item>
+      <div class="error-message" *ngIf="submitted && password !== confirmPassword">Las contraseñas no coinciden.</div>
+    </div>
+
+    <ion-button expand="block" type="submit">Registrarse</ion-button>
+  </form>
+</ion-content>
