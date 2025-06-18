@@ -12,10 +12,14 @@
       <ion-card-title>Datos del Usuario</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-item>
-        <ion-label>Correo:</ion-label>
-        <span>{{ userEmail }}</span> <!-- Email from login -->
-      </ion-item>
+      <div style="margin-bottom: 0.5rem;">
+        <strong>Nombre de usuario:</strong>
+        <p>{{ username }}</p>
+      </div>
+      <div>
+        <strong>Correo:</strong>
+        <p>{{ userEmail }}</p>
+      </div>
     </ion-card-content>
   </ion-card>
 
@@ -24,50 +28,104 @@
     <ion-card-header>
       <ion-card-title>Historial de Transacciones</ion-card-title>
     </ion-card-header>
+
     <ion-card-content>
 
-      <!-- Filter Dropdown -->
-      <ion-item>
-        <ion-label>Filtrar por tipo:</ion-label>
-        <ion-select [(ngModel)]="selectedTransactionType" (ionChange)="selectTransactionType(selectedTransactionType)">
-          <ion-select-option value="Todos">Todos</ion-select-option>
-          <ion-select-option value="rent">Alquiler</ion-select-option>
-          <ion-select-option value="sale">Compra</ion-select-option>
-        </ion-select>
-      </ion-item>
+<!-- Filter Group -->
+<ion-item lines="none">
+  <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
 
-      <!-- Transaction List (No Columns, Full Width Cards) -->
-      <ion-list>
-        <ion-card class="transaction-card" *ngFor="let transaction of filteredTransactions">
+    <!-- First row: Year and Month -->
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <div style="flex: 1 1 100px;">
+        <ion-label position="stacked">Año</ion-label>
+        <ion-select
+          [value]="selectedYear"
+          (ionChange)="selectYear($event.detail.value)"
+          cancelText="Cancelar"
+          okText="Aceptar"
+          interface="popover"
+        >
+          <ion-select-option [value]="null">Todos</ion-select-option>
+          <ion-select-option *ngFor="let year of availableYears" [value]="year">{{ year }}</ion-select-option>
+        </ion-select>
+      </div>
+
+      <div style="flex: 1 1 100px;">
+        <ion-label position="stacked">Mes</ion-label>
+        <ion-select
+          [value]="selectedMonth"
+          (ionChange)="selectMonth($event.detail.value)"
+          interface="popover"
+        >
+          <ion-select-option [value]="null">Todos</ion-select-option>
+          <ion-select-option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">
+            {{ m < 10 ? '0' + m : m }}
+          </ion-select-option>
+        </ion-select>
+      </div>
+    </div>
+
+    <!-- Second row: Type -->
+    <div style="flex: 1 1 100%;">
+      <ion-label position="stacked">Tipo</ion-label>
+      <ion-select
+        [(ngModel)]="selectedTransactionType"
+        (ionChange)="selectTransactionType(selectedTransactionType)"
+        interface="popover"
+      >
+        <ion-select-option value="Todos">Todos</ion-select-option>
+        <ion-select-option value="rent">Alquiler</ion-select-option>
+        <ion-select-option value="sale">Compra</ion-select-option>
+      </ion-select>
+    </div>
+
+  </div>
+</ion-item>
+
+
+      <!-- Transaction List -->
+      <ion-list *ngIf="transactions.length > 0; else noTransactions">
+        <ion-card class="transaction-card" *ngFor="let transaction of transactions" style="margin: 0 0 1rem 0;">
           <ion-card-header>
-            <ion-card-title>{{ transaction.bookTitle }}</ion-card-title>
+            <ion-card-title style="font-size: 1rem;">{{ transaction.bookTitle }}</ion-card-title>
           </ion-card-header>
 
-          <ion-card-content>
+          <ion-card-content style="font-size: 0.95rem;">
             <p><strong>Tipo:</strong> {{ transaction.type === 'rent' ? 'Alquiler' : 'Compra' }}</p>
+            <p><strong>Fecha:</strong> {{ transaction.displayDate }}</p>
+            <p><strong>Precio:</strong> ${{ transaction.price }}</p>
 
-            <!-- Rental Info -->
-            <div *ngIf="transaction.type === 'rent'">
-              <p><strong>Fecha de inicio:</strong> {{ transaction.startDate | date:'shortDate' }}</p>
-              <p><strong>Fecha de devolución:</strong> {{ transaction.endDate | date:'shortDate' }}</p>
-              <p><strong>Precio de alquiler:</strong> ${{ transaction.rentPrice }}</p>
-              <ion-label>Devuelto:</ion-label>
-              <ion-checkbox [checked]="transaction.returned" disabled></ion-checkbox> <!-- ✅ Read-only -->
-            </div>
+            <ng-container *ngIf="transaction.type === 'rent'">
+              <p><strong>Devuelto:</strong> {{ transaction.returnedStatus }}</p>
+            </ng-container>
 
-            <!-- Purchase Info -->
-            <div *ngIf="transaction.type === 'sale'">
-              <p><strong>Fecha de compra:</strong> {{ transaction.purchaseDate | date:'shortDate' }}</p>
-              <p><strong>Precio:</strong> ${{ transaction.price }}</p>
-            </div>
-
+            <ng-container *ngIf="transaction.type === 'sale'">
+              <p><strong>Método de pago:</strong> N/A</p>
+            </ng-container>
           </ion-card-content>
         </ion-card>
       </ion-list>
+
+      <ng-template #noTransactions>
+        <ion-text color="medium">
+          <p style="text-align: center; margin-top: 1rem;">No hay transacciones para mostrar.</p>
+        </ion-text>
+      </ng-template>
+
+      <!-- Load More Button -->
+      <ion-button
+        *ngIf="hasMoreTransactions && !loading"
+        expand="block"
+        (click)="userId !== null ? loadUserTransactions(userId) : null"
+      >
+        Cargar más
+      </ion-button>
+
+      <ion-spinner *ngIf="loading" style="display: block; margin: 1rem auto;"></ion-spinner>
 
     </ion-card-content>
   </ion-card>
 
   <ion-button expand="full" color="danger" (click)="logout()">Cerrar Sesión</ion-button>
-
 </ion-content>

@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>Comprar Libro</h2>
+
+<mat-dialog-content>
+
+  <!-- Portada del libro -->
+  <img [src]="data.book.cover" alt="Cover of {{ data.book.title }}" class="small-book-cover" />
+
+  <!-- Título y autor -->
+  <p><strong>{{ data.book.title }}</strong> - {{ data.book.author }}</p>
+
+  <!-- Precio de venta -->
+  <p *ngIf="data.book.purchasePrice > 0">
+    <strong>💰 Precio de venta:</strong> ${{ data.book.purchasePrice }}
+  </p>
+
+<!-- Cantidad a comprar con botones estilizados -->
+<div class="amount-controls">
+  <button
+    mat-mini-button
+    color="primary"
+    (click)="decreaseAmount()"
+    [disabled]="amount <= 1"
+  >
+    −
+  </button>
+
+  <input
+    type="number"
+    min="1"
+    [max]="data.book.availableCopiesSales"
+    step="1"
+    [ngModel]="amount"
+    (ngModelChange)="onAmountChange($event)"
+    class="amount-input"
+  />
+
+  <button
+    mat-mini-button
+    color="primary"
+    (click)="increaseAmount()"
+    [disabled]="amount >= data.book.availableCopiesSales"
+  >
+    +
+  </button>
+</div>
+
+<small class="available-hint">Disponible: {{ data.book.availableCopiesSales }}</small>
+
+
+  <!-- Total -->
+  <p style="margin-top: 10px;">
+    <strong>💰 Total:</strong> ${{ totalPrice }}
+  </p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    color="warn"
+    style="font-size: 1.2rem; padding: 10px 20px;"
+    (click)="closeDialog()"
+  >
+    Cancelar
+  </button>
+  <button
+    mat-button
+    color="primary"
+    style="font-size: 1.2rem; padding: 10px 20px;"
+    [disabled]="amount < 1 || amount > data.book.availableCopiesSales"
+    (click)="confirmPurchase()"
+  >
+    Confirmar
+  </button>
+</mat-dialog-actions>

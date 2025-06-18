@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';  // Adjust path if needed
+import { AuthService } from '../../services/Auth/auth.service';  // Adjust path if needed
 
 @Component({
   selector: 'app-login',
@@ -9,46 +9,47 @@ import { AuthService } from '../../services/auth.service';  // Adjust path if ne
   standalone: false,
 })
 export class LoginPage {
-
-  email = '';
+  identifier = '';  // Can be either email or username
   password = '';
   submitted = false;
 
-  shakeEmail = false;
+  shakeIdentifier = false;
   shakePassword = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
-  emailValid(): boolean {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(this.email);
+  identifierValid(): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return this.identifier.length >= 3 && (emailRegex.test(this.identifier) || this.identifier.length >= 3);
   }
 
   passwordValid(): boolean {
     return !!this.password && this.password.length >= 6;
   }
 
-onSubmit() {
-  this.submitted = true;
-  this.shakeEmail = !this.emailValid();
-  this.shakePassword = !this.passwordValid();
+  async onSubmit() {
+    this.submitted = true;
+    this.shakeIdentifier = !this.identifierValid();
+    this.shakePassword = !this.passwordValid();
 
-  if (this.emailValid() && this.passwordValid()) {
-    // Mark user as logged in
-    this.authService.login();
+    if (this.identifierValid() && this.passwordValid()) {
+      const success = await this.authService.login(this.identifier, this.password);
 
-    // ✅ Store email in localStorage so it can be retrieved later
-    localStorage.setItem('userEmail', this.email);
-
-    // Navigate to home page
-    this.router.navigate(['/home']);
-  } else {
-    if (this.shakeEmail) this.triggerShake('shakeEmail');
-    if (this.shakePassword) this.triggerShake('shakePassword');
+      if (success) {
+        localStorage.setItem('userIdentifier', this.identifier);
+        this.router.navigate(['/home']);
+      } else {
+        console.warn('Invalid credentials');
+        this.triggerShake('shakeIdentifier');
+        this.triggerShake('shakePassword');
+      }
+    } else {
+      if (this.shakeIdentifier) this.triggerShake('shakeIdentifier');
+      if (this.shakePassword) this.triggerShake('shakePassword');
+    }
   }
-}
 
-  triggerShake(field: 'shakeEmail' | 'shakePassword') {
+  triggerShake(field: 'shakeIdentifier' | 'shakePassword') {
     this[field] = true;
     setTimeout(() => {
       this[field] = false;

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/Auth/auth.service'; // Adjust path if needed
 
 @Component({
   selector: 'app-register',
@@ -17,8 +18,9 @@ export class RegisterPage {
   shakeUsername = false;
   shakeEmail = false;
   shakePassword = false;
+  shakeConfirmPassword = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   usernameValid(): boolean {
     return this.username.length >= 3;
@@ -33,27 +35,44 @@ export class RegisterPage {
     return !!this.password && this.password.length >= 6;
   }
 
-  triggerShake(field: 'shakeUsername' | 'shakeEmail' | 'shakePassword') {
+  passwordsMatch(): boolean {
+    return this.password === this.confirmPassword;
+  }
+
+  triggerShake(field: 'shakeUsername' | 'shakeEmail' | 'shakePassword' | 'shakeConfirmPassword') {
     this[field] = true;
     setTimeout(() => {
       this[field] = false;
     }, 500);
   }
 
-  onSubmit() {
-    this.submitted = true;
+async onSubmit() {
+  this.submitted = true;
 
-    this.shakeUsername = !this.usernameValid();
-    this.shakeEmail = !this.emailValid();
-    this.shakePassword = !this.passwordValid() || this.password !== this.confirmPassword;
+  this.shakeUsername = !this.usernameValid();
+  this.shakeEmail = !this.emailValid();
+  this.shakePassword = !this.passwordValid();
+  this.shakeConfirmPassword = !this.passwordsMatch();
 
-    if (this.usernameValid() && this.emailValid() && this.passwordValid() && this.password === this.confirmPassword) {
+  if (this.usernameValid() && this.emailValid() && this.passwordValid() && this.passwordsMatch()) {
+    try {
+      await this.authService.register(this.username, this.email, this.password);
       alert(`Cuenta creada exitosamente para ${this.username}!`);
       this.router.navigate(['/login']);
-    } else {
-      if (this.shakeUsername) this.triggerShake('shakeUsername');
-      if (this.shakeEmail) this.triggerShake('shakeEmail');
-      if (this.shakePassword) this.triggerShake('shakePassword');
+    } catch (error: any) {
+      // Handle duplicate username/email or other errors gracefully
+      if (error.message.includes('UNIQUE constraint failed')) {
+        alert('El usuario o correo ya está en uso.');
+      } else {
+        alert('Error al registrar. Intente nuevamente más tarde.');
+      }
     }
+  } else {
+    if (this.shakeUsername) this.triggerShake('shakeUsername');
+    if (this.shakeEmail) this.triggerShake('shakeEmail');
+    if (this.shakePassword) this.triggerShake('shakePassword');
+    if (this.shakeConfirmPassword) this.triggerShake('shakeConfirmPassword');
   }
+}
+
 }

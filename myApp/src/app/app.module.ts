@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReserveComponent } from './reserve/reserve.component';
+import { PurchaseComponent } from './purchase/purchase.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 
@@ -18,7 +20,8 @@ import { AppRoutingModule } from './app-routing.module';
 @NgModule({
   declarations: [
     AppComponent,
-    ReserveComponent // ✅ Declare the popup component
+    ReserveComponent,
+    PurchaseComponent // ✅ Declare the popup component
   ],
   imports: [
     BrowserModule,
@@ -28,9 +31,9 @@ import { AppRoutingModule } from './app-routing.module';
     MatInputModule,
     MatNativeDateModule,
     MatDialogModule,
-    FormsModule
+    FormsModule,
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },SQLite],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

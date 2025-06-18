@@ -8,12 +8,12 @@
 
   <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
 
-    <div [class.shake]="shakeEmail" class="input-container">
+    <div [class.shake]="shakeIdentifier" class="input-container">
       <ion-item>
-        <ion-label position="floating">Email</ion-label>
-        <ion-input type="email" name="email" [(ngModel)]="email" required email></ion-input>
+        <ion-label position="floating">Usuario o Email</ion-label>
+        <ion-input type="text" name="identifier" [(ngModel)]="identifier" required></ion-input>
       </ion-item>
-      <div class="error-message" *ngIf="submitted && !emailValid()">Por favor, ingrese un email válido.</div>
+      <div class="error-message" *ngIf="submitted && !identifierValid()">Por favor, ingrese un usuario o email válido.</div>
     </div>
 
     <div [class.shake]="shakePassword" class="input-container">
@@ -26,8 +26,8 @@
 
     <ion-button expand="block" type="submit">Ingresar</ion-button>
     <p class="register-link">
-  ¿No tienes una cuenta? <a routerLink="/register">Regístrate aquí</a>
-</p>
+      ¿No tienes una cuenta? <a routerLink="/register">Regístrate aquí</a>
+    </p>
 
   </form>
 

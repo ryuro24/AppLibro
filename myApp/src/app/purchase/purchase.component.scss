@@ -1,0 +1,141 @@
+.small-book-cover {
+  width: 80px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px auto;
+}
+
+.amount-controls button {
+  min-width: 44px;        /* bigger tap target on mobile */
+  height: 44px;
+  font-size: 24px;
+  font-weight: 700;
+  background-color: var(--ion-color-primary);
+  color: var(--ion-color-text);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(200, 169, 126, 0.6);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+}
+
+.amount-controls button:disabled {
+  background-color: #ccc;
+  color: #888;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.amount-controls button:hover:not(:disabled),
+.amount-controls button:focus:not(:disabled) {
+  background-color: var(--ion-color-primary);
+  filter: brightness(0.9); /* visually darken the button */
+  box-shadow: 0 5px 12px rgba(200, 169, 126, 0.8);
+  outline: none;
+}
+
+.available-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #666;
+}
+.amount-input {
+  width: 80px;          /* bigger width */
+  padding: 10px;        /* more padding for easier tap */
+  text-align: center;
+  font-size: 28px;      /* bigger font size for the number */
+  font-weight: 700;     /* make the number bolder */
+  border: 2px solid #ccc;  /* thicker border */
+  border-radius: 10px;     /* match the button rounded corners */
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 3px 8px rgba(200, 169, 126, 0.4);
+}
+
+.amount-input:focus {
+  border-color: var(--ion-color-primary);
+  box-shadow: 0 0 6px 2px rgba(200, 169, 126, 0.6);
+}
+/* Dialog Content Styling for Mobile */
+mat-dialog-content {
+  padding: 16px 12px;
+  font-size: 16px;
+  color: var(--ion-color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Book cover image bigger and centered */
+.small-book-cover {
+  width: 120px;
+  height: auto;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Title and author text */
+mat-dialog-content p {
+  margin: 0;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Highlight strong inside paragraphs */
+mat-dialog-content p strong {
+  font-weight: 700;
+  color: var(--ion-color-primary);
+}
+
+/* Amount controls container */
+.amount-controls {
+  width: 100%;
+  max-width: 220px;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+/* Buttons inside amount-controls cursor pointer */
+.amount-controls button {
+  cursor: pointer;
+}
+
+/* Total price text bigger and more prominent */
+mat-dialog-content > p:last-of-type {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 16px;
+  text-align: center;
+  color: var(--ion-color-accent);
+}
+
+/* Available hint small text styling */
+.available-hint {
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* Dialog actions buttons bigger and spaced nicely */
+mat-dialog-actions {
+  padding: 12px 16px;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+mat-dialog-actions button {
+  font-size: 1.3rem !important;
+  padding: 14px 26px !important;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(200, 169, 126, 0.6);
+  transition: box-shadow 0.3s ease;
+}
+
+mat-dialog-actions button:hover {
+  box-shadow: 0 6px 14px rgba(200, 169, 126, 0.85);
+}

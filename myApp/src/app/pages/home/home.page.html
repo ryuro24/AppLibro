@@ -6,65 +6,71 @@
 
 <ion-content class="ion-padding">
 
-  <!-- ComboBox for Genre Filter -->
-  <ion-item>
-    <ion-label>Categoría</ion-label>
-    <ion-select [(ngModel)]="selectedFilter" (ionChange)="selectFilter(selectedFilter)">
-      <ion-select-option *ngFor="let type of filterTypes" [value]="type">{{ type }}</ion-select-option>
-    </ion-select>
-  </ion-item>
+<ion-item>
+  <ion-label>Género</ion-label>
+  <ion-select [(ngModel)]="selectedFilter" (ionChange)="selectFilter($event.detail.value)" interface="popover">
+    <ion-select-option *ngFor="let filter of filterTypes" [value]="filter">
+      {{ filter }}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
 
-  <!-- ComboBox for Rent/Sale Filter -->
-  <ion-item>
-    <ion-label>Tipo</ion-label>
-    <ion-select [(ngModel)]="selectedPriceFilter" (ionChange)="selectPriceFilter(selectedPriceFilter)">
-      <ion-select-option *ngFor="let type of priceFilters" [value]="type">{{ type }}</ion-select-option>
-    </ion-select>
-  </ion-item>
+<ion-item>
+  <ion-label>Filtro transacción</ion-label>
+  <ion-select [(ngModel)]="selectedPriceFilter" (ionChange)="selectPriceFilter($event.detail.value)" interface="popover">
+    <ion-select-option *ngFor="let priceFilter of priceFilters" [value]="priceFilter">
+      {{ priceFilter }}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
 
-  <!-- Search Bar -->
-  <ion-searchbar
-    [(ngModel)]="searchTerm"
-    (ionInput)="filteredBooks"
-    placeholder="Buscar libro por título">
-  </ion-searchbar>
 
-  <!-- Book Grid -->
+
+
+  <!-- Barra de búsqueda -->
+<ion-searchbar
+  [(ngModel)]="searchTerm"
+  (ionInput)="onSearchTermChange()"
+  placeholder="Buscar libro por título">
+</ion-searchbar>
+
+
+  <!-- Grid de libros -->
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-md="4" *ngFor="let book of filteredBooks">
         <ion-card class="book-card">
-          <img [src]="book.cover" alt="Cover of {{ book.title }}" class="book-cover">
-          
+          <img [src]="book.cover" alt="Cover of {{ book.title }}" class="book-cover" />
+
           <ion-card-header>
             <ion-card-title>{{ book.title }}</ion-card-title>
             <ion-card-subtitle>{{ book.author }}</ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
-            <p>📚 Género: {{ book.genre }}</p>
+            <p>📚 Género: {{ book.genres }}</p>
 
-<!-- Rental Price & Availability (Only shown if rentPrice > 0) -->
-<ion-item *ngIf="book.rentPrice > 0">
-  <div class="price-box">
-    <p>💰 Alquiler por semana: {{ '$' + book.rentPrice }}</p>
-    <p>Disponibilidad para alquiler:  
-      <span class="availability" [ngClass]="getAvailabilityClass(book.availableCopiesRent)"></span>
-      {{ book.availableCopiesRent }}
-    </p>
-  </div>
-</ion-item>
+            <ion-item *ngIf="book.rentPrice > 0">
+              <div class="price-box">
+                <p>💰 Alquiler por semana: {{ '$' + book.rentPrice }}</p>
+                <p>
+                  Disponibilidad para alquiler:
+                  <span class="availability" [ngClass]="getAvailabilityClass(book.availableCopiesRent)"></span>
+                  {{ book.availableCopiesRent }}
+                </p>
+              </div>
+            </ion-item>
 
-<!-- Purchase Price & Availability (Only shown if buyPrice > 0) -->
-<ion-item *ngIf="book.buyPrice > 0">
-  <div class="price-box">
-    <p>🛒 Comprar: {{ '$' + book.buyPrice }}</p>
-    <p>Disponibilidad para venta:  
-      <span class="availability" [ngClass]="getAvailabilityClass(book.availableCopiesSales)"></span>
-      {{ book.availableCopiesSales }}
-    </p>
-  </div>
-</ion-item>
+            <ion-item *ngIf="book.buyPrice > 0">
+              <div class="price-box">
+                <p>🛒 Comprar: {{ '$' + book.buyPrice }}</p>
+                <p>
+                  Disponibilidad para venta:
+                  <span class="availability" [ngClass]="getAvailabilityClass(book.availableCopiesSales)"></span>
+                  {{ book.availableCopiesSales }}
+                </p>
+              </div>
+            </ion-item>
 
             <ion-button [routerLink]="'/book-detail/' + book.id" expand="full" color="primary">
               Detalle
@@ -74,5 +80,18 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <!-- Botón cargar más libros -->
+  <ion-button
+    expand="block"
+    (click)="loadBooks()"
+    *ngIf="hasMoreBooks && !loading"
+    class="ion-margin-top"
+  >
+    Cargar más libros
+  </ion-button>
+
+  <!-- Spinner mientras carga -->
+  <ion-spinner *ngIf="loading" name="crescent" class="ion-margin-top"></ion-spinner>
 
 </ion-content>

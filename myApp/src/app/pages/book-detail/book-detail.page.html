@@ -3,55 +3,59 @@
     <ion-buttons slot="start">
       <ion-button (click)="goBack()">←</ion-button>
     </ion-buttons>
-    <ion-title>{{ book.title }}</ion-title>
+    <ion-title>{{ book?.title }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-card class="book-detail-card">
+  <ion-card class="book-detail-card" *ngIf="book">
     <img [src]="book.cover" alt="{{ book.title }}" class="book-cover">
-    
+
     <ion-card-header>
       <ion-card-title>{{ book.title }}</ion-card-title>
       <ion-card-subtitle>{{ book.author }}</ion-card-subtitle>
+      <p><strong>Géneros:</strong> {{ book.genres.join(', ') }}</p>
     </ion-card-header>
 
     <ion-card-content>
-
       <p>📄 Resumen: {{ book.summary }}</p>
 
-<!-- Rental Price & Availability (Only shown if rentPrice > 0) -->
-<ion-item *ngIf="book.rentPrice > 0">
-  <div class="price-box">
-    <p>💰 Alquiler: {{ '$' + book.rentPrice }}</p>
-    <p>Disponibilidad para alquiler:  
-      <span class="availability" [ngClass]="getAvailabilityClass(book.availableCopiesRent)"></span>
-      {{ book.availableCopiesRent }}
-    </p>
-  </div>
-</ion-item>
+      <!-- Rental Price & Availability -->
+      <ion-item *ngIf="book.rentPrice > 0">
+        <div class="price-box">
+          <p>💰 Alquiler: {{ '$' + book.rentPrice }}</p>
+          <p>Disponibilidad para alquiler:  
+            <span class="availability" [ngClass]="getAvailabilityClass(book.availableCopiesRent)"></span>
+            {{ book.availableCopiesRent }}
+          </p>
+        </div>
+      </ion-item>
 
-<!-- Purchase Price & Availability (Only shown if buyPrice > 0) -->
-<ion-item *ngIf="book.buyPrice > 0">
-  <div class="price-box">
-    <p>🛒 Comprar: {{ '$' + book.buyPrice }}</p>
-    <p>Disponibilidad para venta:  
-      <span class="availability" [ngClass]="getAvailabilityClass(book.availableCopiesSales)"></span>
-      {{ book.availableCopiesSales }}
-    </p>
-  </div>
-</ion-item>
+      <!-- Purchase Price & Availability -->
+      <ion-item *ngIf="book.purchasePrice > 0">
+        <div class="price-box">
+          <p>🛒 Comprar: {{ '$' + book.purchasePrice }}</p>
+          <p>Disponibilidad para venta:  
+            <span class="availability" [ngClass]="getAvailabilityClass(book.availableCopiesSales)"></span>
+            {{ book.availableCopiesSales }}
+          </p>
+        </div>
+      </ion-item>
 
-      <!-- Dynamic Buttons: Only appear if rent or sale are available -->
+      <!-- Buttons -->
       <div class="button-container">
         <ion-button *ngIf="book.rentPrice > 0" (click)="openReservationDialog()" expand="full" color="primary">
           Reservar
         </ion-button>
 
-        <ion-button *ngIf="book.buyPrice > 0" expand="full" color="primary">
+        <ion-button *ngIf="book.purchasePrice > 0" (click)="openPurchaseDialog()" expand="full" color="primary">
           Comprar
         </ion-button>
       </div>
     </ion-card-content>
   </ion-card>
+
+  <div *ngIf="!book">
+    <p>Libro no encontrado o cargando...</p>
+  </div>
 </ion-content>
