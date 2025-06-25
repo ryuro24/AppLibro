@@ -1,7 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { formatDate } from '@angular/common';
-import { AuthService } from '../services/Auth/auth.service';
+import { AuthService } from '../../services/Auth/auth.service';
+import { UpdateService } from '../../services/update/update.service';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: false,
@@ -38,6 +40,8 @@ export class ReserveComponent implements OnInit {
     public dialogRef: MatDialogRef<ReserveComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private authService: AuthService,
+    private router: Router,
+    private updateService: UpdateService,
   ) {}
 
   ngOnInit() {
@@ -60,57 +64,59 @@ export class ReserveComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  async confirmReservation() {
-    if (!this.returnDate) {
-      alert("⚠ Debes seleccionar una fecha de devolución antes de confirmar.");
-      return;
-    }
-
-    if (this.currentUserId === null) {
-      alert("⚠ No se pudo confirmar la reserva: ningún usuario ha iniciado sesión.");
-      return;
-    }
-
-    if (this.amount < 1 || this.amount > this.data.book.availableCopiesRent) {
-      alert(`⚠ La cantidad debe ser entre 1 y ${this.data.book.availableCopiesRent}.`);
-      return;
-    }
-
-    try {
-      const officialRentPrice = await this.authService.getRentPrice(this.data.book.id);
-
-      const totalPriceFromDb = officialRentPrice * this.amount * Math.ceil(((this.returnDate.getTime() - this.startDate.getTime()) / (1000 * 60 * 60 * 24)) / 7);
-
-      for (let i = 0; i < this.amount; i++) {
-        await this.authService.insertTransaction({
-          bookId: this.data.book.id,
-          userId: this.currentUserId,
-          startDate: this.startDate,
-          endDate: this.returnDate,
-          price: totalPriceFromDb / this.amount,
-          type: 'rent',
-          bookTitle: this.data.book.title
-        });
-      }
-
-      const formattedReturnDate = formatDate(this.returnDate, 'fullDate', 'en-US');
-      alert(`Reserva confirmada para el usuario #${this.currentUserId}!\nDevolución: ${formattedReturnDate}.\nCantidad: ${this.amount}\nTotal: $${totalPriceFromDb.toFixed(2)}`);
-
-      this.dialogRef.close({
-        bookId: this.data.book.id,
-        userId: this.currentUserId,
-        startDate: this.startDate,
-        endDate: this.returnDate,
-        price: totalPriceFromDb,
-        amount: this.amount,
-        type: 'rent',
-        bookTitle: this.data.book.title
-      });
-    } catch (error) {
-      alert('⚠ Error al guardar la reserva. Intenta de nuevo.');
-      console.error(error);
-    }
+async confirmReservation() {
+  if (!this.returnDate) {
+    alert("⚠ Debes seleccionar una fecha de devolución antes de confirmar.");
+    return;
   }
+
+  if (this.currentUserId === null) {
+    alert("⚠ No se pudo confirmar la reserva: ningún usuario ha iniciado sesión.");
+    return;
+  }
+
+  if (this.amount < 1 || this.amount > this.data.book.availableCopiesRent) {
+    alert(`⚠ La cantidad debe ser entre 1 y ${this.data.book.availableCopiesRent}.`);
+    return;
+  }
+
+  try {
+    const bookId = this.data.book.bookid ?? this.data.book.id;
+    const officialRentPrice = await this.authService.getRentPrice(bookId);
+    const weeks = Math.ceil(((this.returnDate.getTime() - this.startDate.getTime()) / (1000 * 60 * 60 * 24)) / 7);
+    const totalPriceFromDb = officialRentPrice * this.amount * weeks;
+
+    await this.authService.insertTransaction({
+      bookId,
+      userId: this.currentUserId,
+      startDate: this.startDate,
+      endDate: this.returnDate,
+      price: totalPriceFromDb,
+      amount: this.amount,
+      type: 'rent',
+      bookTitle: this.data.book.title
+    });
+
+    const formattedReturnDate = formatDate(this.returnDate, 'fullDate', 'en-US');
+    alert(`Reserva confirmada para el usuario #${this.currentUserId}!\nDevolución: ${formattedReturnDate}.\nCantidad: ${this.amount}\nTotal: $${totalPriceFromDb.toFixed(2)}`);
+
+    this.dialogRef.close({
+      bookId,
+      userId: this.currentUserId,
+      startDate: this.startDate,
+      endDate: this.returnDate,
+      price: totalPriceFromDb,
+      amount: this.amount,
+      type: 'rent',
+      bookTitle: this.data.book.title
+    });
+    this.reloadCurrentRoute();
+  } catch (error: any) {
+    alert(`⚠ Error al guardar la reserva: ${error.message || 'Intenta de nuevo.'}`);
+    console.error(error);
+  }
+}
+
 
   calculateTotal() {
     if (this.returnDate) {
@@ -145,4 +151,12 @@ export class ReserveComponent implements OnInit {
   decreaseAmount() {
     this.amount = this.amount - 1;
   }
+
+          reloadCurrentRoute(): void {
+        const currentUrl = this.router.url;
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          this.router.navigate([currentUrl]);
+          this.updateService.notifyHomeUpdated();
+        });
+      }
 }

@@ -46,8 +46,11 @@ export class RegisterPage {
     }, 500);
   }
 
+registrationError: string | null = null;
+
 async onSubmit() {
   this.submitted = true;
+  this.registrationError = null; // Clear previous server error message
 
   this.shakeUsername = !this.usernameValid();
   this.shakeEmail = !this.emailValid();
@@ -60,12 +63,8 @@ async onSubmit() {
       alert(`Cuenta creada exitosamente para ${this.username}!`);
       this.router.navigate(['/login']);
     } catch (error: any) {
-      // Handle duplicate username/email or other errors gracefully
-      if (error.message.includes('UNIQUE constraint failed')) {
-        alert('El usuario o correo ya está en uso.');
-      } else {
-        alert('Error al registrar. Intente nuevamente más tarde.');
-      }
+      this.registrationError = error.message || 'Error al registrar. Intente nuevamente más tarde.';
+      console.error(error); // Optional: keep for debugging
     }
   } else {
     if (this.shakeUsername) this.triggerShake('shakeUsername');
@@ -74,5 +73,6 @@ async onSubmit() {
     if (this.shakeConfirmPassword) this.triggerShake('shakeConfirmPassword');
   }
 }
+
 
 }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { ReserveComponent } from '../../reserve/reserve.component';
+import { ReserveComponent } from '../../popups/reserve/reserve.component';
 // Importa el componente para la compra (purchase)
-import { PurchaseComponent } from '../../purchase/purchase.component'; 
+import { PurchaseComponent } from '../../popups/purchase/purchase.component'; 
 import { AuthService } from '../../services/Auth/auth.service';
 import { firstValueFrom } from 'rxjs';
 
@@ -80,23 +80,35 @@ export class BookDetailPage implements OnInit {
   goBack() {
     this.router.navigate(['/home']);
   }
+  
+openReservationDialog() {
+  if (!this.book) return;
 
-  openReservationDialog() {
-    if (!this.book) return;
-    this.dialog.open(ReserveComponent, {
-      width: '350px',
-      data: { book: this.book }
-    });
+  if (!this.authService.isLoggedIn) {
+    this.router.navigate(['/login']);
+    return;
   }
 
-  // Función para abrir diálogo de compra (purchase)
-  openPurchaseDialog() {
-    if (!this.book) return;
-    this.dialog.open(PurchaseComponent, {
-      width: '350px',
-      data: { book: this.book }
-    });
+  this.dialog.open(ReserveComponent, {
+    width: '350px',
+    data: { book: this.book }
+  });
+}
+
+openPurchaseDialog() {
+  if (!this.book) return;
+
+  if (!this.authService.isLoggedIn) {
+    this.router.navigate(['/login']);
+    return;
   }
+
+  this.dialog.open(PurchaseComponent, {
+    width: '350px',
+    data: { book: this.book }
+  });
+}
+
 
   getAvailabilityClass(copies: number): string {
     return copies > 3 ? 'green-dot' : copies > 0 ? 'yellow-dot' : 'red-dot';

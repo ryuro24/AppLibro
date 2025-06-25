@@ -17,7 +17,7 @@ export class AuthService {
   constructor(
     private sqlite: SQLite,
     private platform: Platform,
-    private seedService: SeedService
+    private seedService: SeedService,
   ) {
     this.platform.ready().then(() => {
       if (this.platform.is('android')) {
@@ -149,17 +149,27 @@ private async shouldSeedDatabase(): Promise<boolean> {
   }
 }
 
-  async register(username: string, email: string, password: string): Promise<void> {
-    try {
-      await this.dbInstance.executeSql(
-        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-        [username, email, password]
-      );
-    } catch (error: any) {
-      console.error('Error registering user:', error);
-      throw error;
-    }
+async register(username: string, email: string, password: string): Promise<void> {
+  if (!username || !email || !password) {
+    throw new Error('Missing required registration fields.');
   }
+  // Optionally add more validation here (e.g., regex for email format)
+
+  try {
+    await this.dbInstance.executeSql(
+      'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+      [username, email, password]
+    );
+  } catch (error: any) {
+    // Normalize error message for duplicate key
+    if (error.message.includes('UNIQUE constraint failed')) {
+      throw new Error('Username or email already in use.');
+    }
+    console.error('Error registering user:', error);
+    throw new Error('Registration failed due to server error.');
+  }
+}
+
 
   async login(identifier: string, password: string): Promise<boolean> {
     try {
@@ -209,11 +219,30 @@ async insertTransaction(transaction: {
   endDate?: Date;
   purchaseDate?: Date;
   price: number;
-  amount?: number; // NUEVO
+  amount?: number;
   bookTitle?: string;
   returned?: boolean;
 }): Promise<void> {
   try {
+    // Step 1: Check inventory based on transaction type
+    const column = transaction.type === 'rent' ? 'current_inventory_rent' : 'current_inventory_sale';
+
+    const result = await this.dbInstance.executeSql(
+      `SELECT ${column} FROM books WHERE bookid = ?`, 
+      [transaction.bookId]
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error('Book not found');
+    }
+
+    const inventory = result.rows.item(0)[column];
+
+    if (inventory < (transaction.amount || 1)) {
+      throw new Error(`Not enough inventory to complete the ${transaction.type} transaction.`);
+    }
+
+    // Step 2: Proceed with insert if inventory is enough
     const sql = `
       INSERT INTO transactions
         (bookid, userid, type, startDate, endDate, purchaseDate, price, amount, returned, bookTitle)
@@ -233,9 +262,12 @@ async insertTransaction(transaction: {
     ]);
   } catch (error) {
     console.error('Error inserting transaction:', error);
-    throw error;
+    throw error; // Bubble up to caller to handle (show message etc)
   }
 }
+
+
+
 async getBookPrice(bookId: number): Promise<number> {
   const db = this.dbInstance;
   try {
@@ -261,6 +293,24 @@ async getRentPrice(bookId: number): Promise<number> {
     }
   } catch (error) {
     console.error('Error al obtener precio de renta del libro:', error);
+    throw error;
+  }
+}
+
+async updateUsername(userId: number, newUsername: string): Promise<void> {
+  try {
+    await this.dbInstance.executeSql(`UPDATE users SET username = ? WHERE userid = ?`, [newUsername, userId]);
+  } catch (error) {
+    console.error('Error updating username:', error);
+    throw error;
+  }
+}
+
+async updatePassword(userId: number, newPassword: string): Promise<void> {
+  try {
+    await this.dbInstance.executeSql(`UPDATE users SET password = ? WHERE userid = ?`, [newPassword, userId]);
+  } catch (error) {
+    console.error('Error updating password:', error);
     throw error;
   }
 }

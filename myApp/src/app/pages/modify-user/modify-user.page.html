@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Modificar {{ mode === 'username' ? 'Usuario' : 'Contraseña' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <form (ngSubmit)="submit()">
+
+    <ng-container *ngIf="mode === 'username'">
+      <ion-item>
+        <ion-label position="floating">Nuevo Usuario</ion-label>
+        <ion-input [(ngModel)]="newUsername" name="newUsername" required></ion-input>
+      </ion-item>
+    </ng-container>
+
+    <ng-container *ngIf="mode === 'password'">
+      <ion-item>
+        <ion-label position="floating">Nueva Contraseña</ion-label>
+        <ion-input [(ngModel)]="newPassword" name="newPassword" type="password" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Confirmar Contraseña</ion-label>
+        <ion-input [(ngModel)]="confirmPassword" name="confirmPassword" type="password" required></ion-input>
+      </ion-item>
+    </ng-container>
+
+    <ion-button expand="block" type="submit" style="margin-top: 1.5rem;">
+      Guardar Cambios
+    </ion-button>
+
+    <ion-button expand="block" fill="clear" color="medium" routerLink="/profile">
+      Cancelar
+    </ion-button>
+
+  </form>
+
+</ion-content>

@@ -21,6 +21,12 @@
         <p>{{ userEmail }}</p>
       </div>
     </ion-card-content>
+    <ion-button expand="block" color="primary" routerLink="/modify-user/username" style="margin-top: 1rem;">
+      Cambiar nombre de usuario
+    </ion-button>
+    <ion-button expand="block" color="medium" routerLink="/modify-user/password">
+      Cambiar contraseña
+    </ion-button>
   </ion-card>
 
   <!-- Transaction History Card -->
@@ -94,6 +100,7 @@
           <ion-card-content style="font-size: 0.95rem;">
             <p><strong>Tipo:</strong> {{ transaction.type === 'rent' ? 'Alquiler' : 'Compra' }}</p>
             <p><strong>Fecha:</strong> {{ transaction.displayDate }}</p>
+            <p><strong>Cantidad:</strong> {{ transaction.amount }}</p>
             <p><strong>Precio:</strong> ${{ transaction.price }}</p>
 
             <ng-container *ngIf="transaction.type === 'rent'">

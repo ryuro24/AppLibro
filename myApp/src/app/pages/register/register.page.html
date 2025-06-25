@@ -40,6 +40,11 @@
       <div class="error-message" *ngIf="submitted && !passwordsMatch()">Las contraseñas no coinciden.</div>
     </div>
 
+    <!-- Server-side error message -->
+    <div class="error-message" *ngIf="registrationError" style="margin-bottom: 1em;">
+      {{ registrationError }}
+    </div>
+
     <ion-button expand="block" type="submit">Registrarse</ion-button>
     <p class="login-link">
       ¿Ya tienes una cuenta? <a routerLink="/login">Ingresa aquí</a>

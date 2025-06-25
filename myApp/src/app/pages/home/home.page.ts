@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/Auth/auth.service';
 import { SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
+import { UpdateService } from '../../services/update/update.service';
+
 
 interface Book {
   id: number;
@@ -37,7 +39,9 @@ export class HomePage implements OnInit {
   hasMoreBooks = true;
   loading = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private updateService: UpdateService) {}
 
   async ngOnInit() {
     this.authService.dbReady$.subscribe(async (ready) => {
@@ -47,6 +51,9 @@ export class HomePage implements OnInit {
         await this.resetAndLoadBooks();  // Carga la primera página de libros
       }
     });
+    this.updateService.homeUpdated$.subscribe(() => {
+    this.resetAndLoadBooks(); // Triggers full reload like your normal flow
+  });
   }
 
   // Método para reiniciar la paginación y cargar libros desde la primera página

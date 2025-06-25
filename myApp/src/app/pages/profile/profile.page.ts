@@ -147,6 +147,7 @@ export class ProfilePage implements OnInit {
           displayDate,
           price,
           returnedStatus,
+          amount: t.amount ?? 1,
         });
       }
 
