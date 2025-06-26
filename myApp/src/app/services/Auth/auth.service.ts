@@ -58,13 +58,15 @@ export class AuthService {
   async createTables() {
     try {
       await this.dbInstance.executeSql(`
-        CREATE TABLE IF NOT EXISTS users (
-          userid INTEGER PRIMARY KEY AUTOINCREMENT,
-          username TEXT UNIQUE,
-          email TEXT UNIQUE,
-          password TEXT,
-          usertype TEXT DEFAULT 'client'
-        )`, []);
+          CREATE TABLE IF NOT EXISTS users (
+            userid INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE,
+            email TEXT UNIQUE,
+            password TEXT,
+            usertype TEXT DEFAULT 'client',
+            photo TEXT
+          )`, []);
+
 
       await this.dbInstance.executeSql(`
         CREATE TABLE IF NOT EXISTS genre (
@@ -171,26 +173,32 @@ async register(username: string, email: string, password: string): Promise<void>
 }
 
 
-  async login(identifier: string, password: string): Promise<boolean> {
-    try {
-      const result = await this.dbInstance.executeSql(
-        'SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?',
-        [identifier, identifier, password]
-      );
+async login(identifier: string, password: string): Promise<'success' | 'not_found' | 'wrong_password' | 'error'> {
+  try {
+    const result = await this.dbInstance.executeSql(
+      'SELECT * FROM users WHERE username = ? OR email = ?',
+      [identifier, identifier]
+    );
 
-      if (result.rows.length > 0) {
-        const user = result.rows.item(0);
-        localStorage.setItem('userid', user.userid.toString());
-        this.loggedIn.next(true);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      return false;
+    if (result.rows.length === 0) {
+      return 'not_found';
     }
+
+    const user = result.rows.item(0);
+    if (user.password !== password) {
+      return 'wrong_password';
+    }
+
+    localStorage.setItem('userid', user.userid.toString());
+    this.loggedIn.next(true);
+    return 'success';
+
+  } catch (error) {
+    console.error('Error logging in:', error);
+    return 'error';
   }
+}
+
 
   async logout() {
     this.loggedIn.next(false);
@@ -311,6 +319,18 @@ async updatePassword(userId: number, newPassword: string): Promise<void> {
     await this.dbInstance.executeSql(`UPDATE users SET password = ? WHERE userid = ?`, [newPassword, userId]);
   } catch (error) {
     console.error('Error updating password:', error);
+    throw error;
+  }
+}
+
+async updateUserPhoto(userId: number, imageBase64: string): Promise<void> {
+  try {
+    await this.dbInstance.executeSql(
+      `UPDATE users SET photo = ? WHERE userid = ?`,
+      [imageBase64, userId]
+    );
+  } catch (error) {
+    console.error('Error updating user photo:', error);
     throw error;
   }
 }

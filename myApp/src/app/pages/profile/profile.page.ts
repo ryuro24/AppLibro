@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/Auth/auth.service';
 import { firstValueFrom } from 'rxjs';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+
+
 
 @Component({
   selector: 'app-profile',
@@ -12,7 +15,7 @@ import { firstValueFrom } from 'rxjs';
 export class ProfilePage implements OnInit {
   userEmail = 'Cargando...';
   username = 'Cargando...';
-
+  userPhoto: string | null = null;
   selectedTransactionType = 'Todos';
   selectedMonth: number | null = null;
   selectedYear: number | null = null;
@@ -61,24 +64,28 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  async loadUserData(userId: number): Promise<void> {
-    try {
-      const sql = 'SELECT username, email FROM users WHERE userid = ?';
-      const res = await this.authService.dbInstance.executeSql(sql, [userId]);
-      if (res.rows.length > 0) {
-        const user = res.rows.item(0);
-        this.username = user.username;
-        this.userEmail = user.email;
-      } else {
-        this.username = 'Usuario no encontrado';
-        this.userEmail = 'Correo no disponible';
-      }
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      this.username = 'Error cargando usuario';
-      this.userEmail = 'Error cargando correo';
+async loadUserData(userId: number): Promise<void> {
+  try {
+    const sql = 'SELECT username, email, photo FROM users WHERE userid = ?';
+    const res = await this.authService.dbInstance.executeSql(sql, [userId]);
+    if (res.rows.length > 0) {
+      const user = res.rows.item(0);
+      this.username = user.username;
+      this.userEmail = user.email;
+      this.userPhoto = user.photo || null;  // <-- store photo if it exists
+    } else {
+      this.username = 'Usuario no encontrado';
+      this.userEmail = 'Correo no disponible';
+      this.userPhoto = null;
     }
+  } catch (error) {
+    console.error('Error loading user data:', error);
+    this.username = 'Error cargando usuario';
+    this.userEmail = 'Error cargando correo';
+    this.userPhoto = null;
   }
+}
+
 
   async resetAndLoadTransactions(userId: number) {
     this.transactions = [];
@@ -181,4 +188,25 @@ export class ProfilePage implements OnInit {
     this.authService.logout();
     this.router.navigate(['/home']);
   }
+
+  async changePhoto() {
+  try {
+    const image = await Camera.getPhoto({
+      quality: 80,
+      allowEditing: false,
+      resultType: CameraResultType.Base64,
+      source: CameraSource.Prompt // shows choice between camera/gallery
+    });
+
+    if (image.base64String && this.userId !== null) {
+      const base64Data = `data:image/jpeg;base64,${image.base64String}`;
+      await this.authService.updateUserPhoto(this.userId, base64Data);
+      this.userPhoto = base64Data; // Update UI
+      console.log('✅ Foto actualizada');
+    }
+  } catch (error) {
+    console.error('❌ Error al obtener la foto:', error);
+  }
+}
+
 }

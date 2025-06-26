@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/Auth/auth.service';  // Adjust path if needed
+import { AuthService } from '../../services/Auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -9,43 +9,47 @@ import { AuthService } from '../../services/Auth/auth.service';  // Adjust path 
   standalone: false,
 })
 export class LoginPage {
-  identifier = '';  // Can be either email or username
+  identifier = '';
   password = '';
   submitted = false;
 
   shakeIdentifier = false;
   shakePassword = false;
 
+  loginError: '' | 'not_found' | 'wrong_password' | 'error' = '';
+
   constructor(private router: Router, private authService: AuthService) {}
-
-  identifierValid(): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return this.identifier.length >= 3 && (emailRegex.test(this.identifier) || this.identifier.length >= 3);
-  }
-
-  passwordValid(): boolean {
-    return !!this.password && this.password.length >= 6;
-  }
 
   async onSubmit() {
     this.submitted = true;
-    this.shakeIdentifier = !this.identifierValid();
-    this.shakePassword = !this.passwordValid();
+    this.loginError = '';
 
-    if (this.identifierValid() && this.passwordValid()) {
-      const success = await this.authService.login(this.identifier, this.password);
+    const result = await this.authService.login(this.identifier, this.password);
 
-      if (success) {
+    switch (result) {
+      case 'success':
         localStorage.setItem('userIdentifier', this.identifier);
         this.router.navigate(['/home']);
-      } else {
-        console.warn('Invalid credentials');
+        break;
+
+      case 'not_found':
+        this.loginError = 'not_found';
+        this.shakeIdentifier = true;
+        this.triggerShake('shakeIdentifier');
+        break;
+
+      case 'wrong_password':
+        this.loginError = 'wrong_password';
+        this.shakePassword = true;
+        this.triggerShake('shakePassword');
+        break;
+
+      case 'error':
+      default:
+        this.loginError = 'error';
         this.triggerShake('shakeIdentifier');
         this.triggerShake('shakePassword');
-      }
-    } else {
-      if (this.shakeIdentifier) this.triggerShake('shakeIdentifier');
-      if (this.shakePassword) this.triggerShake('shakePassword');
+        break;
     }
   }
 

@@ -51,3 +51,11 @@ ion-select {
 ion-button {
   margin-top: 20px; /* Space above logout button */
 }
+
+.profile-avatar {
+  margin: auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+}

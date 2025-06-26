@@ -7,27 +7,46 @@
 <ion-content class="ion-padding">
 
   <!-- User Info Card -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Datos del Usuario</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div style="margin-bottom: 0.5rem;">
-        <strong>Nombre de usuario:</strong>
-        <p>{{ username }}</p>
-      </div>
-      <div>
-        <strong>Correo:</strong>
-        <p>{{ userEmail }}</p>
-      </div>
-    </ion-card-content>
-    <ion-button expand="block" color="primary" routerLink="/modify-user/username" style="margin-top: 1rem;">
-      Cambiar nombre de usuario
-    </ion-button>
-    <ion-button expand="block" color="medium" routerLink="/modify-user/password">
-      Cambiar contraseña
-    </ion-button>
-  </ion-card>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Datos del Usuario</ion-card-title>
+  </ion-card-header>
+
+<ion-card-content>
+  <!-- Profile picture -->
+  <div style="text-align: center; margin-bottom: 1rem;">
+    <ion-avatar style="width: 120px; height: 120px; margin: auto;">
+      <img *ngIf="userPhoto; else noPhoto" [src]="userPhoto" alt="Foto de perfil" style="width: 100%; height: 100%; object-fit: cover;" />
+      <ng-template #noPhoto>
+        <ion-icon name="person-circle-outline" style="font-size: 120px; color: gray;"></ion-icon>
+      </ng-template>
+    </ion-avatar>
+    <ion-button size="small" color="tertiary" (click)="changePhoto()" style="margin-top: 0.5rem;">Cambiar foto</ion-button>
+  </div>
+
+  <!-- Username -->
+  <div style="margin-bottom: 0.5rem;">
+    <strong>Nombre de usuario:</strong>
+    <p>{{ username }}</p>
+  </div>
+
+  <!-- Email -->
+  <div style="margin-bottom: 0.5rem;">
+    <strong>Correo:</strong>
+    <p>{{ userEmail }}</p>
+  </div>
+
+  <!-- Action buttons -->
+  <ion-button expand="block" color="primary" routerLink="/modify-user/username" style="margin-top: 1rem;">
+    Cambiar nombre de usuario
+  </ion-button>
+
+  <ion-button expand="block" color="medium" routerLink="/modify-user/password">
+    Cambiar contraseña
+  </ion-button>
+</ion-card-content>
+</ion-card>
+
 
   <!-- Transaction History Card -->
   <ion-card>

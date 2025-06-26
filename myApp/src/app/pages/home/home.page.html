@@ -40,7 +40,8 @@
     <ion-row>
       <ion-col size="12" size-md="4" *ngFor="let book of filteredBooks">
         <ion-card class="book-card">
-          <img [src]="book.cover" alt="Cover of {{ book.title }}" class="book-cover" />
+          <ion-img [src]="book.cover" alt="Cover of {{ book.title }}" class="book-cover"></ion-img>
+
 
           <ion-card-header>
             <ion-card-title>{{ book.title }}</ion-card-title>

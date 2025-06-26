@@ -10,7 +10,7 @@ import { ReserveComponent } from './popups/reserve/reserve.component';
 import { PurchaseComponent } from './popups/purchase/purchase.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
-
+import { HttpClientModule } from '@angular/common/http';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -34,6 +34,7 @@ import { AppRoutingModule } from './app-routing.module';
     MatNativeDateModule,
     MatDialogModule,
     FormsModule,
+    HttpClientModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },SQLite],
   bootstrap: [AppComponent]

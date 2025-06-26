@@ -9,7 +9,8 @@
 
 <ion-content class="ion-padding">
   <ion-card class="book-detail-card" *ngIf="book">
-    <img [src]="book.cover" alt="{{ book.title }}" class="book-cover">
+<ion-img [src]="book.cover" alt="{{ book.title }}" class="book-cover"></ion-img>
+
 
     <ion-card-header>
       <ion-card-title>{{ book.title }}</ion-card-title>

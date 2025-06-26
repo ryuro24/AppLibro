@@ -13,18 +13,27 @@
         <ion-label position="floating">Usuario o Email</ion-label>
         <ion-input type="text" name="identifier" [(ngModel)]="identifier" required></ion-input>
       </ion-item>
-      <div class="error-message" *ngIf="submitted && !identifierValid()">Por favor, ingrese un usuario o email válido.</div>
+      <div class="error-message" *ngIf="loginError === 'not_found'">
+        Usuario o email no encontrado.
+      </div>
     </div>
 
     <div [class.shake]="shakePassword" class="input-container">
       <ion-item>
         <ion-label position="floating">Contraseña</ion-label>
-        <ion-input type="password" name="password" [(ngModel)]="password" required minlength="6"></ion-input>
+        <ion-input type="password" name="password" [(ngModel)]="password" required></ion-input>
       </ion-item>
-      <div class="error-message" *ngIf="submitted && !passwordValid()">La contraseña es obligatoria (mínimo 6 caracteres).</div>
+      <div class="error-message" *ngIf="loginError === 'wrong_password'">
+        Contraseña incorrecta.
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="loginError === 'error'">
+      Error inesperado. Intenta nuevamente.
     </div>
 
     <ion-button expand="block" type="submit">Ingresar</ion-button>
+
     <p class="register-link">
       ¿No tienes una cuenta? <a routerLink="/register">Regístrate aquí</a>
     </p>
