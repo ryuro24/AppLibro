@@ -305,14 +305,25 @@ async getRentPrice(bookId: number): Promise<number> {
   }
 }
 
-async updateUsername(userId: number, newUsername: string): Promise<void> {
+async updateUsername(userId: number, newUsername: string): Promise<'success' | 'duplicate' | 'error'> {
   try {
-    await this.dbInstance.executeSql(`UPDATE users SET username = ? WHERE userid = ?`, [newUsername, userId]);
-  } catch (error) {
+    await this.dbInstance.executeSql(
+      `UPDATE users SET username = ? WHERE userid = ?`,
+      [newUsername, userId]
+    );
+    return 'success';
+  } catch (error: any) {
+    if (error.message?.includes('UNIQUE') || error.code === 2067) {
+      // Error 2067 = constraint failed (UNIQUE violation)
+      console.warn('Nombre de usuario ya existe.');
+      return 'duplicate';
+    }
+
     console.error('Error updating username:', error);
-    throw error;
+    return 'error';
   }
 }
+
 
 async updatePassword(userId: number, newPassword: string): Promise<void> {
   try {

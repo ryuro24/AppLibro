@@ -5,16 +5,22 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
   <form (ngSubmit)="submit()">
 
+    <!-- CAMBIO DE USUARIO -->
     <ng-container *ngIf="mode === 'username'">
       <ion-item>
         <ion-label position="floating">Nuevo Usuario</ion-label>
-        <ion-input [(ngModel)]="newUsername" name="newUsername" required></ion-input>
+        <ion-input [(ngModel)]="newUsername" name="newUsername" required (ionInput)="onUsernameInput()"></ion-input>
       </ion-item>
+
+      <!-- Mensaje de error si el usuario ya existe -->
+      <ion-text color="danger" *ngIf="usernameExists">
+        <p style="margin-left: 16px; margin-top: 4px;">El nombre de usuario ya está en uso. Intenta con otro.</p>
+      </ion-text>
     </ng-container>
 
+    <!-- CAMBIO DE CONTRASEÑA -->
     <ng-container *ngIf="mode === 'password'">
       <ion-item>
         <ion-label position="floating">Nueva Contraseña</ion-label>
@@ -36,5 +42,4 @@
     </ion-button>
 
   </form>
-
 </ion-content>
